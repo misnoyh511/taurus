@@ -7,8 +7,12 @@ COPY composer.lock composer.json /var/www/
 
 COPY . /var/www
 
-RUN apt-get update && apt-get install -y libmcrypt-dev mysql-client zip unzip \
+RUN apt-get update && apt-get install -y libmcrypt-dev mysql-client zip unzip supervisor \
     && docker-php-ext-install mbstring pdo_mysql
+
+COPY ./config/supervisor_taurus.conf /etc/supervisor/conf.d
+RUN systemctl enable supervisor
+RUN systemctl start supervisor
 
 
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
