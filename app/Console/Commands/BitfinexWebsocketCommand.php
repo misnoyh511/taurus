@@ -78,7 +78,8 @@ class BitfinexWebsocketCommand
     }
 
     /**
-     * Periodically checks that Redis only stores ~24h of data, all older is in MySQL
+     * Periodically checks that Redis only stores ~24h of data, all older is in MySQL.
+     * Is notified by 'price-data' Redis channel when price data is pulled.
      */
     private function manageDatabases() {
         $keys = Redis::keys('*');
@@ -105,7 +106,6 @@ class BitfinexWebsocketCommand
             $this->manageDatabases();
         });
         $this->fetchSpread(env('BITFINEX_RATE_LIMIT'));
-        $this->manageDatabases();
         $this->loop->run();
     }
 }
