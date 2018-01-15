@@ -27,3 +27,20 @@ After the initial build/run, you just need to deploy it to use it:
 This stack-based deployment is production-ready.
 
 
+## Architecture
+Taurus uses the CryptoCurrency eXchange Trading Library (CCXT) (https://github.com/ccxt/ccxt) to retrieve trading/market data and conduct trades.
+
+The system has 4 main components:
+* PHP Application (app)
+* NGINX Web Server (web)
+* MySQL Database (database)
+* Redis Server (cache)
+
+The app server runs a script continuously via supervisord that pulls market and order data from Bitfinex. Data less than 24 hours old is stored in the cache, and data older than 24 hours is stored in the database.
+Taurus feeds the data into TA-Lib signals and indicators, and makes trades based on the results on GDAX.
+
+## Current Development
+* Data feed
+* Signals processing
+* Trade execution
+

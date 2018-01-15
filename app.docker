@@ -11,8 +11,6 @@ RUN apt-get update && apt-get install -y libmcrypt-dev mysql-client zip unzip su
     && docker-php-ext-install mbstring pdo_mysql
 
 COPY ./config/supervisor_taurus.conf /etc/supervisor/conf.d
-RUN systemctl enable supervisor
-RUN systemctl start supervisor
 
 
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
@@ -25,4 +23,4 @@ RUN chown -R www-data:www-data \
         /var/www/storage \
         /var/www/bootstrap/cache
 
-RUN php artisan optimize
+CMD /usr/bin/supervisord
