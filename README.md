@@ -1,5 +1,5 @@
 # Taurus
-A cryptocurrency trading bot.
+A cryptocurrency trading bot. It is currently designed to trade BTC/USD on GDAX, but is planned to trade multiple symbols on multiple exchanges.
 
 
 ## Build/Usage
