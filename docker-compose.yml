@@ -1,18 +1,59 @@
-version: '3'
+version: '3.1'
 services:
-    web:
-        build:
-            context: ./
-            dockerfile: web.docker
-        volumes:
-            - ./:/var/www
-        ports:
-            - "8080:80"
-        links:
-            - app
-    app:
-        build:
-            context: ./
-            dockerfile: app.docker
-        volumes:
-            - ./:/var/www
+
+  web:
+    image: web:latest
+    volumes:
+      - ./:/var/www
+    ports:
+      - 8000:80
+    networks:
+      - "taurus"
+
+  app:
+    image: app:latest
+    volumes:
+      - ./:/var/www
+    environment:
+      - "DB_PORT=3306"
+      - "DB_HOST=database"
+    secrets:
+      - MYSQL_PASSWORD
+    ports:
+      - 9000:9000
+    networks:
+          - "taurus"
+
+  database:
+    image: mysql:5.7
+    environment:
+      - "MYSQL_DATABASE=taurus"
+      - "MYSQL_USER=taurus"
+    secrets:
+      - MYSQL_PASSWORD
+      - MYSQL_ROOT_PASSWORD
+    ports:
+      - 3306:3306
+    volumes:
+      - dbdata:/var/lib/mysql
+    networks:
+          - "taurus"
+
+  cache:
+    image: redis:3.0-alpine
+    ports:
+      - 6739:6739
+    networks:
+          - "taurus"
+
+secrets:
+  MYSQL_PASSWORD:
+    external: true
+  MYSQL_ROOT_PASSWORD:
+    external: true
+
+volumes:
+  dbdata:
+
+networks:
+  taurus:

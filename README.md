@@ -3,14 +3,27 @@ A cryptocurrency trading bot.
 
 
 ## Build/Usage
-The bot is Dockerized. To use the bot, build the image and run:
+The bot is Dockerized, and makes use of Docker secrets (https://docs.docker.com/engine/swarm/secrets/).
+Therefore, before you can use the bot, you have to create your secrets (note the trailing dash!):
 
-`docker build -t taurus . `
+`docker swarm init`
 
-`docker run --name=taurus -p 127.0.0.1:8000:8000 taurus`
+`echo "<YourMySqlPassword>" | docker secret create MYSQL_PASSWORD -`
 
-After the initial build/run, you just need to start it to use it:
+`echo "<YourMySqlRootPassword> | docker secret create MYSQL_PASSWORD -` 
+ 
+To use the bot, build the images and run:
 
-`docker start taurus`
+`docker image build -t web -f web.docker .`
+
+`docker image build -t app -f app.docker .`
+
+`docker stack deploy -c docker-compose.yml taurus`
+
+After the initial build/run, you just need to deploy it to use it:
+
+`docker stack deploy -c docker-compose.yml taurus`
+
+This stack-based deployment is production-ready.
 
 
