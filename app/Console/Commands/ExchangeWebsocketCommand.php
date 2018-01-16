@@ -103,14 +103,16 @@ abstract class ExchangeWebsocketCommand extends Command
      * Periodically checks that Redis only stores ~24h of data, all older is in MySQL.
      * Is notified by exchange-specific Redis channel when price data is pulled.
      *
-     * @param $pattern  string      Search pattern for Redis keys
-     * @param $exchange string      The name of the exchange the data is from. Should match the list of 'id's on GitHub (https://github.com/ccxt/ccxt/wiki/Exchange-Markets).
+     * @param $data_source  string  Market data source (see class PHPDoc comment)
+     * @param $pattern      string  Search pattern for Redis keys
+     * @param $exchange     string  The name of the exchange the data is from. Should match the list of 'id's on GitHub (https://github.com/ccxt/ccxt/wiki/Exchange-Markets).
      */
     protected function manageDatabases($data_source, $pattern, $exchange) {
         $keys = Redis::keys($pattern);
         foreach($keys as $key) {
+
             // Only move if older than 24h
-            if(time() - $key > 7200) {
+            if(time() - $key > 86400) {
                 $data = json_decode(Redis::get($key));
 
                 // Create MySQL entry based on data source

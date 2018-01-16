@@ -1,6 +1,7 @@
 # Taurus
 A cryptocurrency trading bot. It is currently designed to trade BTC/USD on GDAX, but is planned to trade multiple symbols on multiple exchanges.
 
+** This application is in active development, and is not usable! **
 
 ## Build/Usage
 The bot is Dockerized, and makes use of Docker secrets (https://docs.docker.com/engine/swarm/secrets/).

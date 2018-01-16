@@ -7,7 +7,7 @@ COPY composer.lock composer.json /var/www/
 
 COPY . /var/www
 
-RUN apt-get update && apt-get install -y libmcrypt-dev mysql-client zip unzip supervisor \
+RUN apt-get update && apt-get install -y libmcrypt-dev mysql-client zip unzip supervisor php-pear \
     && docker-php-ext-install mbstring pdo_mysql
 
 COPY ./config/supervisor_taurus.conf /etc/supervisor/conf.d
@@ -18,6 +18,8 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
     && php -r "unlink('composer-setup.php');" \
     && php composer.phar install --no-dev --no-scripts \
     && rm composer.phar
+
+RUN pear install trader
 
 RUN chown -R www-data:www-data \
         /var/www/storage \

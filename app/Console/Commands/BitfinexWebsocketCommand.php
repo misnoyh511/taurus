@@ -41,10 +41,20 @@ class BitfinexWebsocketCommand extends ExchangeWebsocketCommand
      *
      */
     public function handle() {
+
+        // Monitor Redis for new data and sync with MySQL
         Redis::subscribe(['bitfinex-spread'], function() {
-            $this->manageDatabases('bitifinex-spread-*', $this->exchange_name);
+            $this->manageDatabases('spread', 'bitifinex-spread-*', $this->exchange_name);
         });
+        Redis::subscribe(['bitfinex-ohlcv'], function() {
+            $this->manageDatabases('ohlcv', 'bitfinex-ohlcv-*', $this->exchange_name);
+        });
+
+        // Prepare to pull in data
         $this->fetchSpread($this->exchange_name, env('BITFINEX_RATE_LIMIT'));
+        $this->fetchOHLCV($this->exchange_name, env('BITFINEX_RATE_LIMIT'));
+
+        // Fire
         $this->loop->run();
     }
 }
